@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Persona Reels — teardown &amp; 15s upgrade plan</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+<style>
+:root{
+  --bg:#0c0d10; --panel:#14161b; --panel2:#1a1d24; --line:#262a33;
+  --ink:#e8eaef; --dim:#9aa2b1; --faint:#6b7383;
+  --hot:#ff4d6d; --warm:#ffb03a; --cool:#4dd0e1; --good:#54d98c; --vio:#a78bfa;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{width:100%;padding:0 clamp(16px,3vw,56px)}
+header{border-bottom:1px solid var(--line);padding:38px 0 30px;margin-bottom:34px;
+  background:linear-gradient(180deg,#121419,transparent)}
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--hot);margin-bottom:14px}
+h1{margin:0 0 12px;font-size:clamp(30px,4vw,50px);line-height:1.05;letter-spacing:-.022em;font-weight:760}
+h1 em{font-style:normal;color:var(--warm)}
+.sub{color:var(--dim);font-size:clamp(15px,1.4vw,19px);max-width:88ch;margin:0}
+.meta{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.tag{font:600 11.5px/1 var(--mono);letter-spacing:.06em;padding:6px 10px;border:1px solid var(--line);
+  border-radius:999px;color:var(--dim);background:var(--panel)}
+.tag.on{color:var(--good);border-color:#2c5a41}
+.tag.no{color:var(--hot);border-color:#5a2c39}
+
+h2{font-size:clamp(20px,2.1vw,27px);margin:52px 0 6px;letter-spacing:-.015em;font-weight:720}
+h2 .n{font:700 13px/1 var(--mono);color:var(--faint);margin-right:12px;vertical-align:2px}
+.lede{color:var(--dim);margin:0 0 20px;max-width:96ch}
+h3{font-size:16.5px;margin:26px 0 8px;letter-spacing:-.01em}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.card.hot{border-color:#4a2530;background:linear-gradient(180deg,#1d1418,var(--panel))}
+.card.good{border-color:#24503a;background:linear-gradient(180deg,#111c17,var(--panel))}
+.card h4{margin:0 0 8px;font-size:14.5px;letter-spacing:-.005em}
+.card p{margin:0;color:var(--dim);font-size:14.5px}
+
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.stat .v{font:800 clamp(26px,3vw,36px)/1 var(--mono);letter-spacing:-.02em}
+.stat .l{color:var(--faint);font:600 11px/1.35 var(--mono);letter-spacing:.09em;text-transform:uppercase;margin-top:9px}
+.stat .d{color:var(--dim);font-size:13px;margin-top:7px}
+.v.hot{color:var(--hot)}.v.warm{color:var(--warm)}.v.cool{color:var(--cool)}.v.good{color:var(--good)}.v.vio{color:var(--vio)}
+
+table{width:100%;border-collapse:collapse;margin:12px 0 4px;font-size:14.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--faint);font:600 11px/1.3 var(--mono);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+td.num{font-family:var(--mono);white-space:nowrap}
+tbody tr:hover{background:#161920}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.tbl table{margin:0}
+.tbl th{background:var(--panel2)}
+
+.hist{display:flex;align-items:flex-end;gap:2px;height:210px;padding:16px 18px 0;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.hist i{flex:1 0 8px;background:#2a2f3a;border-radius:2px 2px 0 0;position:relative;min-height:2px}
+.hist i.pk{background:linear-gradient(180deg,var(--hot),#7a2338)}
+.axis{display:flex;justify-content:space-between;color:var(--faint);
+  font:600 11px/1 var(--mono);padding:8px 18px 0}
+
+ul{margin:8px 0 0;padding-left:20px;color:var(--dim)}
+li{margin:7px 0}
+li strong{color:var(--ink)}
+code{font-family:var(--mono);font-size:.9em;background:#1b1f27;border:1px solid var(--line);
+  padding:1.5px 6px;border-radius:5px;color:#cfd6e4}
+pre{background:#0f1116;border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+  overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;color:#cfd6e4;margin:12px 0}
+.note{border-left:3px solid var(--warm);background:#1a1710;padding:12px 16px;border-radius:0 8px 8px 0;
+  margin:14px 0;color:#e7dcc4;font-size:14.5px}
+.note.stop{border-color:var(--hot);background:#1c1114;color:#f2d4da}
+.note.win{border-color:var(--good);background:#101c15;color:#cfe9d8}
+.note b{color:#fff}
+footer{margin:64px 0 40px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+.beat{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:14px 0}
+.beat .b{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.beat .b .t{font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--warm);margin-bottom:8px}
+.beat .b .w{font-size:14.5px;color:var(--dim)}
+.beat .b b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Competitor teardown → production plan · 16 Aug 2026</div>
+  <h1>138 monetised reels, taken apart.<br>Then the plan to make <em>15-second</em> ones that beat them.</h1>
+  <p class="sub">Every clip on those pages is built the same way, and the build is automated — the proof is
+  one number: <strong>the cut lands at 0.503 of the runtime, with a p10–p90 spread of 0.001.</strong>
+  This is what the format is, why it works on a video model, and the five decisions that beat it.</p>
+  <div class="meta">
+    <span class="tag">n = 131 measured</span>
+    <span class="tag">32 watched frame-by-frame</span>
+    <span class="tag on">3 detectors built</span>
+    <span class="tag no">2 detectors discarded</span>
+    <span class="tag">$0 spent</span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="n">01</span>The one idea</h2>
+  <p class="lede">The format is defined by what it <em>removes</em>. Every element a video model reliably
+  fails at has been deleted from the frame — and what's left is the one thing these models are genuinely good at.</p>
+  <div class="grid g2">
+    <div class="card hot">
+      <h4>Deleted from every clip</h4>
+      <p>Objects held in hands · material transformations · camera movement · on-screen and garment text ·
+      dialogue · location changes inside a shot.</p>
+    </div>
+    <div class="card good">
+      <h4>What's left</h4>
+      <p>An adult woman, standing, in one real place, doing one small human movement. That's the entire
+      content — and it lands in the narrow band where generated video reads as real.</p>
+    </div>
+  </div>
+  <div class="note"><b>Why this matters for us:</b> our own recent batches failed on exactly the deleted list —
+  held tools detaching, transformations fighting the subject for the frame, wide shots turning her into a
+  silhouette, text rendering as noise, cuts appearing mid-clip. This genre wins by never attempting any of it.</div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>The cut is a machine</h2>
+  <p class="lede">Peak frame-difference position across all 131 clips, in 40 bins. If a human were editing,
+  this would be a spread. It is a spike.</p>
+  <div class="hist" id="hist"></div>
+  <div class="axis"><span>0.0</span><span>0.25</span><span>0.50 — the cut</span><span>0.75</span><span>1.0</span></div>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="stat"><div class="v hot">73%</div><div class="l">spliced at midpoint</div><div class="d">95 of 131. The rest are single takes.</div></div>
+    <div class="stat"><div class="v warm">0.503</div><div class="l">median cut position</div><div class="d">p10–p90 = 0.502–0.503</div></div>
+    <div class="stat"><div class="v cool">5.06 s</div><div class="l">per generated beat</div><div class="d">Two renders, joined. Not one clip.</div></div>
+    <div class="stat"><div class="v vio">3</div><div class="l">production pipelines</div><div class="d">fps + audio-bitrate clusters disagree</div></div>
+  </div>
+  <div class="note win"><b>The lesson:</b> a 10-second reel is not a 10-second render. It is two 5-second
+  renders. That is cheaper, dodges drift entirely, and buys a second hook at the midpoint.</div>
+</section>
+
+<section>
+  <h2><span class="n">03</span>The measured spec</h2>
+  <p class="lede">Build to these numbers. Two independent estimators of centring — one from where the
+  <em>motion</em> is, one from where the <em>skin</em> is — agree to 0.007.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Measure</th><th>Median</th><th>p10</th><th>p90</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td>Subject centre-x (motion)</td><td class="num">0.503</td><td class="num">0.479</td><td class="num">0.536</td><td>Dead centre, always</td></tr>
+      <tr><td>Subject centre-x (skin)</td><td class="num">0.496</td><td class="num">0.457</td><td class="num">0.541</td><td>Independent confirmation</td></tr>
+      <tr><td>Subject width / frame</td><td class="num">0.844</td><td class="num">0.722</td><td class="num">0.911</td><td>She fills the frame</td></tr>
+      <tr><td>Top of subject (0 = top)</td><td class="num">0.106</td><td class="num">0.025</td><td class="num">0.200</td><td>Head near the top edge</td></tr>
+      <tr><td>Bottom of subject</td><td class="num">0.963</td><td class="num">0.906</td><td class="num">0.975</td><td>Body runs off the bottom</td></tr>
+      <tr><td>Motion energy</td><td class="num">7.85</td><td class="num">4.41</td><td class="num">11.78</td><td>&lt;2 reads broken, &gt;14 loses the body</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="lede" style="margin-top:14px">Framing is <strong>mid-thigh to crown</strong>, never full-body-with-headroom.
+  Vertical 9:16. No text, no speech — the speech band sits 6–8&nbsp;dB below full level, and 28 clips carry
+  no audio track at all. <strong>The music is added at publish time, not generated.</strong></p>
+</section>
+
+<section>
+  <h2><span class="n">04</span>The plan — 15 s is three beats, not one render</h2>
+  <p class="lede">The single most important decision, and it's an engineering one.</p>
+  <div class="tbl">
+  <table>
+    <thead><tr><th></th><th>One 15.08 s render</th><th>Three 5 s beats</th></tr></thead>
+    <tbody>
+      <tr><td>GPU time on the Beast</td><td class="num">7.0 min</td><td class="num" style="color:var(--good)">4.0 min</td></tr>
+      <tr><td>Drift</td><td>Enters the drift zone (obvious 10–12 s)</td><td style="color:var(--good)">Never reaches it</td></tr>
+      <tr><td>Hooks in the reel</td><td class="num">1</td><td class="num" style="color:var(--good)">3</td></tr>
+      <tr><td>Angle / outfit / location changes</td><td class="num">0</td><td class="num" style="color:var(--good)">2</td></tr>
+      <tr><td>A bad take costs you</td><td>the whole 15 s</td><td style="color:var(--good)">5 s</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="lede" style="margin-top:14px">43% cheaper, structurally higher quality, three times the hooks.
+  We're extending a pattern that already wins — not inventing one.</p>
+
+  <h3>The angle ladder — change between beats, never within one</h3>
+  <p class="lede">All 131 clips use a locked static camera. Zero moves. That isn't laziness — a moving camera
+  is where the model warps and swims. So we get "different angles" the free way: three locked setups, cut together.</p>
+  <div class="beat">
+    <div class="b"><div class="t">Beat 1 · 0–5 s</div><div class="w"><b>Medium, eye level, straight on.</b> Mid-thigh to crown. The format's proven frame — establishes her.</div></div>
+    <div class="b"><div class="t">Beat 2 · 5–10 s</div><div class="w"><b>Medium-close, low 3/4, ~15° under.</b> The angle change is the cut the viewer <em>feels</em>.</div></div>
+    <div class="b"><div class="t">Beat 3 · 10–15 s</div><div class="w"><b>Wide, or a tight close.</b> Pay off with either the world or the face. Never both.</div></div>
+  </div>
+  <div class="note">Keep <code>centre-x ≈ 0.50</code> in every beat. The angle changes; the centring never does.</div>
+</section>
+
+<section>
+  <h2><span class="n">05</span>The four levers they leave on the table</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4>① Persona lock — the moat</h4>
+      <p>Competitors re-roll the woman constantly; ~a quarter of spliced clips change her <em>mid-clip</em>.
+      That's why they get views and not followers. Lock one persona with a reference image and carry her
+      across every beat and every reel. This is what converts a view-farm into a page.</p>
+    </div>
+    <div class="card">
+      <h4>② Light — the biggest untouched gap</h4>
+      <p><strong>100% of the sample is flat frontal midday daylight.</strong> That is the entire lighting design
+      of a 1.3M-follower page. Golden-hour rim light, practicals, neon, night — all cost <em>zero</em> extra
+      render time and instantly read as produced.</p>
+    </div>
+    <div class="card">
+      <h4>③ Elemental motion</h4>
+      <p>The model fails at held objects and is good at ambient physics. The sample uses neither. Wind in hair
+      and fabric, rain, steam, spray, dust in a light beam, falling petals — free differentiation, one per beat.</p>
+    </div>
+    <div class="card">
+      <h4>④ Cut to the music</h4>
+      <p>Pick the track <em>before</em> assembling. At 120 bpm a beat is 0.5 s, so 5.000 s is exactly 10 beats and
+      the cuts land clean. At 128 bpm use 5.625 s beats (3 bars). A cut on the downbeat is the whole
+      difference between "edited" and "assembled".</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">06</span>The hero concept — one motion, three worlds</h2>
+  <p class="lede">She performs one single continuous motion. The world changes under her at every cut.</p>
+  <div class="beat">
+    <div class="b"><div class="t">World 1</div><div class="w">Rain-soaked <b>neon street at night</b>. Wet ground, magenta and cyan practicals.</div></div>
+    <div class="b"><div class="t">World 2</div><div class="w"><b>Golden-hour rooftop.</b> Low sun behind her, wind lifting her hair.</div></div>
+    <div class="b"><div class="t">World 3</div><div class="w"><b>White cyc studio.</b> Soft overhead, petals falling through frame.</div></div>
+  </div>
+  <p class="lede">It works because the prompt barely changes: <strong>subject block identical, framing block
+  identical, motion block identical — only setting and light are swapped.</strong> That's exactly what the
+  2×5 s splice already does, pushed to its end. The cut lands on the same body position, so it reads as a
+  teleport rather than an edit. Nothing in the 131 does this.</p>
+  <div class="note win"><b>Two cheaper siblings:</b> the <b>match-cut wardrobe</b> (identical pose and framing,
+  only the outfit changes — turns the splice from artifact into deliberate effect), and <b>the twin</b>
+  (the two-subject variant exists in ~10% of the set; used on purpose, the same persona twice in one frame
+  is a real trick).</div>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Render budget &amp; build order</h2>
+  <div class="grid g4">
+    <div class="stat"><div class="v cool">80 s</div><div class="l">per 5 s beat, warm</div></div>
+    <div class="stat"><div class="v warm">~7 min</div><div class="l">wall per 15 s reel</div><div class="d">3 renders + 60 s cooldowns</div></div>
+    <div class="stat"><div class="v good">~8</div><div class="l">reels per hour</div></div>
+    <div class="stat"><div class="v vio">~80</div><div class="l">in a 10 h overnight</div><div class="d">a month of daily posts × 3 pages</div></div>
+  </div>
+  <div class="note"><b>Heat is the ceiling, not VRAM.</b> Hold the card ≤40 °C for 60 s before every render —
+  it pins at 93–95 °C and throttles 2,835→1,612 MHz. Peak VRAM is only ~46 of 96 GB.
+  Launch <code>--highvram --vram-headroom 2</code>. Never <code>--use-sage-attention</code>.</div>
+  <ol style="color:var(--dim);padding-left:22px">
+    <li><strong>Persona pass</strong> — generate 3–5 reference portraits, keep the ones that hold across angles.</li>
+    <li><strong>Two-clip gate</strong> — build ONE full 15 s reel, run <code>qa.py --beats 3 --duration 15</code>, look at it. Only then scale. Bad batches are otherwise discovered at clip 20.</li>
+    <li><strong>Ten-reel batch</strong> — one persona, ten world/wardrobe/angle triplets.</li>
+    <li><strong>Post and measure</strong> before batching 80. Retention at 5 s and 10 s tells you whether beats 2 and 3 earn their render time. It's the only metric that matters.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="n">08</span>The two gates that stop a batch</h2>
+  <div class="note stop"><b>H3 licence §V.4</b> restricts distribution of H3 <em>outputs</em> in the EU, UK,
+  South Korea and the US — and a public Facebook page publishes to all four. Resolve before the first post.
+  The standing answer is <b>design on H3, render the shipping frames on Wan 2.2</b>.</div>
+  <div class="note stop"><b>Adults only, plain opaque fabric, platform-SFW.</b> Sheer fabric rendering
+  underlying anatomy is what gets pages swept — and it's unnecessary: the strongest measured performers are
+  plain cotton. Use the platform's own AI label; it's free, it doesn't suppress reach, and EU AI Act Art. 50
+  has applied since 2026-08-02.</div>
+</section>
+
+<section>
+  <h2><span class="n">09</span>How the numbers were kept honest</h2>
+  <p class="lede">Three detectors were built. One was rebuilt and two were thrown away — the failures are
+  more instructive than the successes.</p>
+  <div class="grid g3">
+    <div class="card good">
+      <h4>✅ Splice detector — rebuilt</h4>
+      <p>ffmpeg's scene score reported <em>0 cuts</em> on clips that are visibly two halves, because a join
+      between two <em>similar</em> clips scores below threshold. One clip is a brunette in one kitchen then a
+      <strong>blonde in another</strong> — and scored zero. Replacement uses median+MAD outliers on frame
+      differences: it scores that clip <code>z=25.4 at 0.502</code>. Positive control: a known splice at 4.0 s
+      of 8.0 s → detected at exactly 4.0.</p>
+    </div>
+    <div class="card hot">
+      <h4>✗ Multi-subject by body shape — discarded</h4>
+      <p>Flagged 53 of 69, including clips already confirmed by eye as one woman. An arm held away from the
+      torso makes a gap that reads as a second body.</p>
+    </div>
+    <div class="card hot">
+      <h4>✗ Multi-subject by head blobs — discarded</h4>
+      <p>Scored 7/12 against hand-checked controls, every error a false positive. So subject count is reported
+      from <strong>watching</strong>, not from a detector: 2 of 32 watched had two women (~10%).</p>
+    </div>
+  </div>
+  <div class="note">Also corrected against the full set: an early "subject lit ~20 luma levels brighter than
+  the surround" came from a 51-clip subset and <b>did not survive n=131</b> — the real figure is ~8 levels, a
+  mild bias rather than a vignette. It is not a lighting rule.</div>
+</section>
+
+<section>
+  <h2><span class="n">10</span>The AI tells to check for</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4>Garbled garment text — the loudest</h4>
+      <p>Every graphic tee in the set is nonsense on inspection: "HAJIE U", "Panye OKis", "RAHKENIBLE",
+      "Rander Mesion", "BacIVORLIN", "RAIUCEN", "RENCE WALK". This one tell is why plain fabric is mandatory.</p>
+    </div>
+    <div class="card">
+      <h4>The rest</h4>
+      <p>Hard colour seam down the body's centreline · near-frozen output (one clip measures motion 0.8) ·
+      sheer fabric · scale drift · background swim on straight lines · fabric moving as a shell instead of
+      draping · identity slip across the splice · frozen blink cadence.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Teardown of 138 supplied reels — 131 measured, 32 watched frame by frame, 16 Aug 2026.
+  Skill installed at <code>~/.claude/skills/persona-reel/</code> with the format spec, prompt templates,
+  the upgrade strategy, and two tested scripts (<code>assemble.py</code>, <code>qa.py</code>).
+  Working files in <code>/root/workspace/reel-brain/</code>. Source videos treated as scratch and not retained.
+</footer>
+
+</div>
+<script>
+fetch('hist.json').then(r=>r.json()).then(d=>{
+  const el=document.getElementById('hist'), mx=Math.max(...d.hist);
+  el.innerHTML=d.hist.map((v,i)=>{
+    const h=Math.max(2,Math.round(v/mx*180));
+    const pk=(i===20)?' class="pk"':'';
+    return `<i${pk} style="height:${h}px" title="${(i/40).toFixed(3)}–${((i+1)/40).toFixed(3)} · ${v} clip${v===1?'':'s'}"></i>`;
+  }).join('');
+}).catch(()=>{document.getElementById('hist').innerHTML='<span style="color:#6b7383;padding:16px">histogram data unavailable</span>';});
+</script>
+</body>
+</html>
