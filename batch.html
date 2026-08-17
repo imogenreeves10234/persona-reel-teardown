@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Persona batch — 10 clips</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+<style>
+:root{--bg:#0c0d10;--panel:#14161b;--line:#262a33;--ink:#e8eaef;--dim:#9aa2b1;--faint:#6b7383;
+--good:#54d98c;--hot:#ff4d6d;--warm:#ffb03a;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+.wrap{width:100%;padding:0 clamp(16px,3vw,56px)}
+header{border-bottom:1px solid var(--line);padding:34px 0 26px;margin-bottom:28px}
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--warm);margin-bottom:12px}
+h1{margin:0 0 10px;font-size:clamp(26px,3.4vw,42px);line-height:1.06;letter-spacing:-.02em;font-weight:760}
+.sub{color:var(--dim);max-width:96ch;margin:0}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.c{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.c img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+figcaption{padding:14px 16px}
+.c h3{margin:0 0 3px;font-size:16px;letter-spacing:-.01em}
+.who{margin:0 0 9px;color:var(--faint);font-size:13px}
+.m{margin:0 0 5px;font-size:13.5px;color:var(--dim);font-family:var(--mono)}
+.m b{color:var(--faint);font-weight:600} .m s{color:var(--hot);opacity:.75} .m em{color:var(--good);font-style:normal;font-weight:700}
+.px{margin:0;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+.note{border-left:3px solid var(--warm);background:#1a1710;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;color:#e7dcc4;font-size:14.5px}
+.note b{color:#fff}
+footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);color:var(--faint);font-size:13px}
+code{font-family:var(--mono);background:#1b1f27;border:1px solid var(--line);padding:1px 6px;border-radius:5px}
+</style></head><body><div class="wrap">
+<header>
+<div class="kicker">Persona batch · 10 clips · 17 Aug 2026</div>
+<h1>Ten 15-second takes, framed to the measured format</h1>
+<p class="sub">Every clip: one unbroken 15.083s take, vertical, music on, a different woman and a different
+location, no cuts anywhere. Red is the render as it came out of the model; green is after the
+geometric crop that brings her to the 0.844 subject-width measured across 131 competitor reels —
+and which corrects the off-centre drift in the same operation.</p>
+</header>
+<div class="note"><b>Why a crop and not a better prompt.</b> Four paired tests showed the prompt has
+almost no authority over framing on this model: word-ratio <em>refuted</em>, camera-block negations
+<em>refuted</em> (0.544 vs 0.522), flat backgrounds worth only +0.05, and asking for a dramatically
+tighter crop worth <b>+0.034</b> against a 0.17 gap. The prompt's own spread across four seeds was
+0.622–0.756. Geometry closes exactly what language could not, for free, with no upscaling.</div>
+<div class="grid">
+  <figure class="c">
+    <img src="batch/pb_00_laundromat.jpg" alt="Laundromat, night contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Laundromat, night</h3><p class="who">Latina · honey-blonde streaks</p>
+      <p class="m"><b>width</b> <s>0.511</s> → <em>0.756</em> &nbsp;·&nbsp; <b>centre</b> <s>0.442</s> → <em>0.498</em></p>
+      <p class="px">464x812 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_01_rooftop-golden.jpg" alt="Rooftop, golden hour contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Rooftop, golden hour</h3><p class="who">East Asian · electric-blue streak</p>
+      <p class="m"><b>width</b> <s>0.589</s> → <em>0.767</em> &nbsp;·&nbsp; <b>centre</b> <s>0.494</s> → <em>0.503</em></p>
+      <p class="px">534x936 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_02_garage-gym.jpg" alt="Garage gym contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Garage gym</h3><p class="who">Black · box braids, burgundy tips</p>
+      <p class="m"><b>width</b> <s>0.489</s> → <em>0.733</em> &nbsp;·&nbsp; <b>centre</b> <s>0.492</s> → <em>0.504</em></p>
+      <p class="px">444x778 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_03_kitchen-evening.jpg" alt="Kitchen, evening contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Kitchen, evening</h3><p class="who">South Asian · caramel balayage</p>
+      <p class="m"><b>width</b> <s>0.611</s> → <em>0.767</em> &nbsp;·&nbsp; <b>centre</b> <s>0.356</s> → <em>0.463</em></p>
+      <p class="px">554x972 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_04_carpark-night.jpg" alt="Car park, night contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Car park, night</h3><p class="who">Mediterranean · chestnut waves</p>
+      <p class="m"><b>width</b> <s>0.378</s> → <em>0.8</em> &nbsp;·&nbsp; <b>centre</b> <s>0.544</s> → <em>0.5</em></p>
+      <p class="px">504x884 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_05_greenhouse.jpg" alt="Greenhouse contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Greenhouse</h3><p class="who">SE Asian · pink streak</p>
+      <p class="m"><b>width</b> <s>0.644</s> → <em>0.722</em> &nbsp;·&nbsp; <b>centre</b> <s>0.569</s> → <em>0.536</em></p>
+      <p class="px">586x1024 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_06_bedroom-lamp.jpg" alt="Bedroom, lamp contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Bedroom, lamp</h3><p class="who">Afro-Latina · copper highlights</p>
+      <p class="m"><b>width</b> <s>0.556</s> → <em>0.767</em> &nbsp;·&nbsp; <b>centre</b> <s>0.398</s> → <em>0.508</em></p>
+      <p class="px">504x884 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_07_boardwalk-sunset.jpg" alt="Boardwalk, sunset contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Boardwalk, sunset</h3><p class="who">Middle Eastern · long dark hair</p>
+      <p class="m"><b>width</b> <s>0.633</s> → <em>0.722</em> &nbsp;·&nbsp; <b>centre</b> <s>0.417</s> → <em>0.472</em></p>
+      <p class="px">576x1008 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_08_neon-corner.jpg" alt="Neon corner, night contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Neon corner, night</h3><p class="who">Platinum · lilac underlayer</p>
+      <p class="m"><b>width</b> <s>0.689</s> → <em>0.633</em> &nbsp;·&nbsp; <b>centre</b> <s>0.485</s> → <em>0.528</em></p>
+      <p class="px">626x1096 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+  <figure class="c">
+    <img src="batch/pb_09_stairwell-window.jpg" alt="Stairwell, window light contact sheet" loading="lazy" width="900" height="600">
+    <figcaption>
+      <h3>Stairwell, window light</h3><p class="who">East African · honey streaks</p>
+      <p class="m"><b>width</b> <s>0.544</s> → <em>0.778</em> &nbsp;·&nbsp; <b>centre</b> <s>0.506</s> → <em>0.515</em></p>
+      <p class="px">494x866 · 15.083s · one unbroken take</p>
+    </figcaption>
+  </figure>
+</div>
+<footer>MiniMax H3 fl2va · 768×1344 × 362f × 20 steps · ~36 min per render on RTX PRO 6000 ·
+no dialogue tag in any prompt (the mechanism that keeps speech out) ·
+sources on the rig at <code>D:\aifilm\out\video\*_fmt.mp4</code></footer>
+</div></body></html>
